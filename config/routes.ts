@@ -70,12 +70,12 @@ export default [
     hideInMenu: true,
     component: './TransactionDetail',
   },
-  {
-    path: '/manage-groups-permission',
-    name: 'Groups Permission',
-    icon: 'AppstoreAddOutlined',
-    component: './Groups',
-  },
+  // {
+  //   path: '/manage-groups-permission',
+  //   name: 'Groups Permission',
+  //   icon: 'AppstoreAddOutlined',
+  //   component: './Groups',
+  // },
   {
     path: '/',
     redirect: '/dashboard',

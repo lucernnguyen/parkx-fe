@@ -6,6 +6,7 @@ import * as SystemGroupController from './SystemGroupController';
 import * as SystemParkingController from './SystemParkingController';
 import * as SystemParkingSlotController from './SystemParkingSlotController';
 import * as SystemPermissionController from './SystemPermissionController';
+import * as SystemStatisticController from './SystemStatisticController';
 import * as SystemTransactionController from './SystemTransactionController';
 import * as SystemUserController from './SystemUserController';
 import * as SystemVehicleTypeController from './SystemVehicleTypeController';
@@ -18,5 +19,6 @@ export default {
   SystemGroupController,
   SystemWalletController,
   SystemTransactionController,
+  SystemStatisticController,
   SystemPermissionController,
 };

@@ -1,152 +1,138 @@
-import { PageContainer } from '@ant-design/pro-components';
-import { useModel } from '@umijs/max';
-import { Card, theme } from 'antd';
-import React from 'react';
-
-const InfoCard: React.FC<{
-  title: string;
-  index: number;
-  desc: string;
-  href: string;
-}> = ({ title, href, index, desc }) => {
-  const { useToken } = theme;
-
-  const { token } = useToken();
-
-  return (
-    <div
-      style={{
-        backgroundColor: token.colorBgContainer,
-        boxShadow: token.boxShadow,
-        borderRadius: '8px',
-        fontSize: '14px',
-        color: token.colorTextSecondary,
-        lineHeight: '22px',
-        padding: '16px 19px',
-        minWidth: '220px',
-        flex: 1,
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          gap: '4px',
-          alignItems: 'center',
-        }}
-      >
-        <div
-          style={{
-            width: 48,
-            height: 48,
-            lineHeight: '22px',
-            backgroundSize: '100%',
-            textAlign: 'center',
-            padding: '8px 16px 16px 12px',
-            color: '#FFF',
-            fontWeight: 'bold',
-            backgroundImage:
-              "url('https://gw.alipayobjects.com/zos/bmw-prod/daaf8d50-8e6d-4251-905d-676a24ddfa12.svg')",
-          }}
-        >
-          {index}
-        </div>
-        <div
-          style={{
-            fontSize: '16px',
-            color: token.colorText,
-            paddingBottom: 8,
-          }}
-        >
-          {title}
-        </div>
-      </div>
-      <div
-        style={{
-          fontSize: '14px',
-          color: token.colorTextSecondary,
-          textAlign: 'justify',
-          lineHeight: '22px',
-          marginBottom: 8,
-        }}
-      >
-        {desc}
-      </div>
-      <a href={href} target="_blank" rel="noreferrer">
-        Click here {'>'}
-      </a>
-    </div>
-  );
-};
+import {
+  SystemStatisticControllerParkingSessionByTodayAndCurrentMonthCard,
+  SystemStatisticControllerRevenueByDateChart,
+  SystemStatisticControllerRevenueByTodayAndCurrentMonthCard,
+  SystemStatisticControllerVehicleAmountByTypeChart,
+} from '@/services/api/SystemStatisticController';
+import { Card, Col, Flex, Row, Statistic } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { FaMoneyBillAlt, FaSignOutAlt } from 'react-icons/fa';
+import { FaMapLocationDot } from 'react-icons/fa6';
+import ChartRevenue from './components/ChartRevenue';
+import ChartVehicleType from './components/ChartVehicleType';
 
 const Welcome: React.FC = () => {
-  const { token } = theme.useToken();
-  const { initialState } = useModel('@@initialState');
+  const [vehicleSession, setVehicleSession] = useState<API.ParkingSessionByTodayAndCurrentMonth>();
+  const [revenue, setRevenue] = useState<API.RevenueByTodayAndCurrentMonth>();
+  const [vehicleData, setVehicleData] = useState<API.VehicleChart[]>([]);
+
+  const [fromDate, setFromDate] = useState<string>();
+  const [toDate, setToDate] = useState<string>();
+  const [revenueData, setRevenueData] = useState<API.RevenueChart[]>([]);
+
+  const getAllDataDashboard = async () => {
+    const vehicleSessionRes =
+      await SystemStatisticControllerParkingSessionByTodayAndCurrentMonthCard();
+    if (vehicleSessionRes.success) {
+      setVehicleSession(vehicleSessionRes.data);
+    }
+    const revenueRes = await SystemStatisticControllerRevenueByTodayAndCurrentMonthCard();
+    if (revenueRes.success) {
+      setRevenue(revenueRes.data);
+    }
+    const vehicleDataRes = await SystemStatisticControllerVehicleAmountByTypeChart();
+    if (vehicleDataRes.success) {
+      setVehicleData(vehicleDataRes.data || []);
+    }
+  };
+  const getRevenueChart = async () => {
+    const res = await SystemStatisticControllerRevenueByDateChart({
+      request: {
+        from: fromDate,
+        to: toDate,
+      },
+    });
+    if (res.success) {
+      setRevenueData(res.data || []);
+    }
+  };
+  useEffect(() => {
+    getAllDataDashboard();
+  }, []);
+  useEffect(() => {
+    getRevenueChart();
+  }, [fromDate, toDate]);
   return (
-    <PageContainer>
-      <Card
-        style={{
-          borderRadius: 8,
-        }}
-        bodyStyle={{
-          backgroundImage:
-            initialState?.settings?.navTheme === 'realDark'
-              ? 'background-image: linear-gradient(75deg, #1A1B1F 0%, #191C1F 100%)'
-              : 'background-image: linear-gradient(75deg, #FBFDFF 0%, #F5F7FF 100%)',
-        }}
-      >
-        <div
-          style={{
-            backgroundPosition: '100% -30%',
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: '274px auto',
-            backgroundImage:
-              "url('https://gw.alipayobjects.com/mdn/rms_a9745b/afts/img/A*BuFmQqsB2iAAAAAAAAAAAAAAARQnAQ')",
-          }}
-        >
-          <div
-            style={{
-              fontSize: '20px',
-              color: token.colorTextHeading,
-            }}
-          >
-            Carpaking
-          </div>
-          <p
-            style={{
-              fontSize: '14px',
-              color: token.colorTextSecondary,
-              lineHeight: '22px',
-              marginTop: 16,
-              marginBottom: 32,
-              width: '65%',
-            }}
-          >
-            Wellcome to Carpaking
-          </p>
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: 16,
-            }}
-          >
-            <InfoCard
-              index={1}
-              href="https://umijs.org/docs/introduce/introduce"
-              title="Carpaking"
-              desc="Carpaking"
+    <Flex style={{ flexDirection: 'column', gap: '32px 0' }}>
+      <Row gutter={24} style={{ gap: '12px 0px' }}>
+        <Col span={8}>
+          <Card bordered={false}>
+            <Statistic
+              title="Checkin/Day"
+              value={vehicleSession?.today?.checkedIn}
+              valueStyle={{ color: '#3f8600' }}
+              prefix={<FaMapLocationDot />}
+              suffix="Vehicles"
             />
-            <InfoCard index={2} title="Carpaking" href="https://ant.design" desc="Carpaking" />
-            <InfoCard
-              index={3}
-              title="Carpaking"
-              href="https://procomponents.ant.design"
-              desc="Carpaking"
+          </Card>
+        </Col>
+        <Col span={8}>
+          <Card bordered={false}>
+            <Statistic
+              title="Checkout/Day"
+              value={vehicleSession?.today?.checkedOut}
+              valueStyle={{ color: '#cf1322' }}
+              prefix={<FaSignOutAlt />}
+              suffix="Vehicles"
             />
-          </div>
-        </div>
-      </Card>
-    </PageContainer>
+          </Card>
+        </Col>
+        <Col span={8}>
+          <Card bordered={false}>
+            <Statistic
+              title="Revenue/Day"
+              value={revenue?.today}
+              precision={2}
+              valueStyle={{ color: '#364dc7' }}
+              prefix={<FaMoneyBillAlt />}
+              suffix="VNĐ"
+            />
+          </Card>
+        </Col>
+        <Col span={8}>
+          <Card bordered={false}>
+            <Statistic
+              title="Checkin/Month"
+              value={vehicleSession?.currentMonth?.checkedIn}
+              valueStyle={{ color: '#3f8600' }}
+              prefix={<FaMapLocationDot />}
+              suffix="Vehicles"
+            />
+          </Card>
+        </Col>
+        <Col span={8}>
+          <Card bordered={false}>
+            <Statistic
+              title="Checkout/month"
+              value={vehicleSession?.currentMonth?.checkedOut}
+              valueStyle={{ color: '#cf1322' }}
+              prefix={<FaSignOutAlt />}
+              suffix="Vehicles"
+            />
+          </Card>
+        </Col>
+        <Col span={8}>
+          <Card bordered={false}>
+            <Statistic
+              title="Revenue/Month"
+              value={revenue?.currentMonth}
+              precision={2}
+              valueStyle={{ color: '#364dc7' }}
+              prefix={<FaMoneyBillAlt />}
+              suffix="VNĐ"
+            />
+          </Card>
+        </Col>
+      </Row>
+      <Row gutter={24} style={{ gap: '64px 0px' }}>
+        <Col span={24}>
+          <ChartVehicleType data={vehicleData} />
+        </Col>
+        <Col span={24}>
+          <ChartRevenue setFromDate={setFromDate} setToDate={setToDate} data={revenueData} />
+        </Col>
+      </Row>
+    </Flex>
   );
 };
 

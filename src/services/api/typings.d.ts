@@ -86,6 +86,16 @@ declare namespace API {
     data?: PermissionInfo[];
   };
 
+  type BaseResponseListRevenueChart = {
+    success?: boolean;
+    data?: RevenueChart[];
+  };
+
+  type BaseResponseListVehicleChart = {
+    success?: boolean;
+    data?: VehicleChart[];
+  };
+
   type BaseResponseListVehicleTypeInfo = {
     success?: boolean;
     data?: VehicleTypeInfo[];
@@ -96,6 +106,11 @@ declare namespace API {
     data?: ParkingInfo;
   };
 
+  type BaseResponseParkingSessionByTodayAndCurrentMonth = {
+    success?: boolean;
+    data?: ParkingSessionByTodayAndCurrentMonth;
+  };
+
   type BaseResponseParkingSlotInfo = {
     success?: boolean;
     data?: ParkingSlotInfo;
@@ -104,6 +119,11 @@ declare namespace API {
   type BaseResponseParkingSlotInfoExtendedDetails = {
     success?: boolean;
     data?: ParkingSlotInfoExtendedDetails;
+  };
+
+  type BaseResponseRevenueByTodayAndCurrentMonth = {
+    success?: boolean;
+    data?: RevenueByTodayAndCurrentMonth;
   };
 
   type BaseResponseSuccessResponse = {
@@ -225,6 +245,11 @@ declare namespace API {
     fullSlot?: boolean;
   };
 
+  type ParkingSessionByTodayAndCurrentMonth = {
+    today?: SessionStatus;
+    currentMonth?: SessionStatus;
+  };
+
   type ParkingSlotInfo = {
     id?: string;
     name?: string;
@@ -277,6 +302,26 @@ declare namespace API {
     shipping?: Shipping;
   };
 
+  type RevenueByTodayAndCurrentMonth = {
+    today?: number;
+    currentMonth?: number;
+  };
+
+  type RevenueChart = {
+    date?: string;
+    amount?: number;
+  };
+
+  type RevenueStatisticRequest = {
+    from?: string;
+    to?: string;
+  };
+
+  type SessionStatus = {
+    checkedIn?: number;
+    checkedOut?: number;
+  };
+
   type Shipping = {
     type?: 'SHIPPING' | 'PICKUP_IN_PERSON';
     name?: Name;
@@ -319,6 +364,10 @@ declare namespace API {
 
   type SystemPermissionControllerGetInfoListWithFilterParams = {
     groupId?: string;
+  };
+
+  type SystemStatisticControllerRevenueByDateChartParams = {
+    request: RevenueStatisticRequest;
   };
 
   type SystemTransactionControllerGetDetailByIdParams = {
@@ -466,6 +515,11 @@ declare namespace API {
     active?: boolean;
     username?: string;
     groupId?: string;
+  };
+
+  type VehicleChart = {
+    vehicleName?: string;
+    amount?: number;
   };
 
   type VehicleTypeInfo = {
