@@ -16,8 +16,8 @@ const Welcome: React.FC = () => {
   const [revenue, setRevenue] = useState<API.RevenueByTodayAndCurrentMonth>();
   const [vehicleData, setVehicleData] = useState<API.VehicleChart[]>([]);
 
-  const [fromDate, setFromDate] = useState<string>();
-  const [toDate, setToDate] = useState<string>();
+  const [fromDate, setFromDate] = useState<string>('');
+  const [toDate, setToDate] = useState<string>('');
   const [revenueData, setRevenueData] = useState<API.RevenueChart[]>([]);
 
   const getAllDataDashboard = async () => {
@@ -124,12 +124,18 @@ const Welcome: React.FC = () => {
           </Card>
         </Col>
       </Row>
-      <Row gutter={24} style={{ gap: '64px 0px' }}>
-        <Col span={24}>
+      <Row gutter={24} style={{ gap: '64px 0px', alignItems: 'end' }}>
+        <Col span={12}>
           <ChartVehicleType data={vehicleData} />
         </Col>
-        <Col span={24}>
-          <ChartRevenue setFromDate={setFromDate} setToDate={setToDate} data={revenueData} />
+        <Col span={12}>
+          <ChartRevenue
+            setFromDate={setFromDate}
+            setToDate={setToDate}
+            data={revenueData}
+            fromDate={fromDate}
+            toDate={toDate}
+          />
         </Col>
       </Row>
     </Flex>
