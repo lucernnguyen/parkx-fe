@@ -14,18 +14,18 @@ const ManageTransaction: React.FC = () => {
   const [isReload, setIsReload] = useState<boolean>(false);
 
   const columns: ProColumns<API.TransactionInfo>[] = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      search: false,
-      align: 'center',
-      width: '20%',
-    },
+    // {
+    //   title: 'ID',
+    //   dataIndex: 'id',
+    //   search: false,
+    //   align: 'center',
+    //   width: '20%',
+    // },
     {
       title: 'Email',
       dataIndex: 'userEmail',
       align: 'center',
-      renderFormItem: () => <Input placeholder="Email" />,
+      renderFormItem: () => <Input placeholder="Email" name="email" />,
     },
     {
       title: 'Balance',
@@ -185,7 +185,7 @@ const ManageTransaction: React.FC = () => {
           const response = await SystemTransactionControllerGetInfoPageWithFilter({
             startDate: fromDate ? moment(fromDate).format('DD/MM/YYYY') : undefined,
             endDate: toDate ? moment(toDate).format('DD/MM/YYYY') : undefined,
-            email: params.email,
+            email: params?.userEmail,
             number: params.number,
             size: params.size,
           });
